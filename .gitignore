@@ -1,0 +1,5 @@
+v15
+*.cache
+/MVideo/obj/Debug/
+/packages/
+/MVideo/bin/Debug
