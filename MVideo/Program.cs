@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EmergenceGuardian.FFmpeg;
 
 namespace MVideo
@@ -15,7 +12,8 @@ namespace MVideo
         static void Main(string[] args)
         {
             string path = ConfigurationManager.AppSettings.Get("directoryPath");
-            string extension = "*.mp4";
+            //string extension = "*.mp4";
+            string extension = "*.ts";
             string[] videoFiles = GetFilesInDirectory(path, extension);
 
             Dictionary<string, List<string>> sortedFilesDictionary = GetDictionary(videoFiles);
