@@ -22,14 +22,27 @@ namespace MVideo
                 ProcessStartOptions processStartOptions =
                     new ProcessStartOptions(FFmpegDisplayMode.None, "test", ProcessPriorityClass.High);
 
-                MediaMuxer.Concatenate(keyValuePair.Value, "complete\\" +
-                                                           new DirectoryInfo(
-                                                                   keyValuePair.Key.Remove(
-                                                                       keyValuePair.Key.Length - 10))
-                                                               .Name + ".mp4",
-                    processStartOptions);
-                Console.WriteLine(keyValuePair);
+                var fileName = new DirectoryInfo(keyValuePair.Key).Name + ".mp4";
+                var saveDir = keyValuePair.Key.Replace(path, @"C:\TMP");
+                var savePath = saveDir + "\\" + fileName;
+                if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                {
+                    throw new Exception("invalid filename");                    
+                }
+
+                if (!File.Exists(savePath))
+                {
+                    if (!Directory.Exists(saveDir))
+                    {
+                        Directory.CreateDirectory(saveDir);
+                    }
+
+                    var completionStatus = MediaMuxer.Concatenate(keyValuePair.Value, savePath, processStartOptions);
+                    Console.WriteLine($"{completionStatus}: {savePath}");
+                }                
             }
+            Console.WriteLine("Press any key to quit");
+            Console.ReadKey();
         }
 
         /// <summary>
