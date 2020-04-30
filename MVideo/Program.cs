@@ -11,6 +11,42 @@ namespace MVideo
     {
         static void Main(string[] args)
         {
+            //MergeTsFiles();
+
+            string terminal = @"/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal";
+            string videoFilePath = "a.mp4";
+            string audioFilePath = "b.mp4";
+            string outPutFile = "d.mp4";
+            if (
+                File.Exists(terminal)
+                &&
+                File.Exists(videoFilePath)
+                &&
+                File.Exists(audioFilePath)
+                )
+            {
+                MergeVideoAndAudio(terminal, videoFilePath, audioFilePath, outPutFile);
+            }            
+        }
+
+        public static void MergeVideoAndAudio(string terminal, string videoFilePath, string audioFilePath, string outPutFile)
+        {
+            string args = $"ffmpeg -i {videoFilePath} -i {audioFilePath} -shortest {outPutFile}";
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                CreateNoWindow = false,
+                FileName = terminal,
+                WorkingDirectory = Environment.CurrentDirectory,
+                Arguments = args
+            };
+            using (Process exeProcess = Process.Start(startInfo))
+            {
+                exeProcess.WaitForExit();
+            }
+        }
+
+        public static void MergeTsFiles()
+        {
             string path = ConfigurationManager.AppSettings.Get("directoryPath");
             //string extension = "*.mp4";
             string extension = "*.ts";
@@ -27,7 +63,7 @@ namespace MVideo
                 var savePath = saveDir + "\\" + fileName;
                 if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
                 {
-                    throw new Exception("invalid filename");                    
+                    throw new Exception("invalid filename");
                 }
 
                 if (!File.Exists(savePath))
@@ -39,7 +75,7 @@ namespace MVideo
 
                     var completionStatus = MediaMuxer.Concatenate(keyValuePair.Value, savePath, processStartOptions);
                     Console.WriteLine($"{completionStatus}: {savePath}");
-                }                
+                }
             }
             Console.WriteLine("Press any key to quit");
             Console.ReadKey();
